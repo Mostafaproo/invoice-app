@@ -1,17 +1,39 @@
 <script setup>
-import { RouterLink, RouterView } from "vue-router";
+import { RouterView } from "vue-router";
+import { defineAsyncComponent, ref  } from "vue";
+
+const Navigation = defineAsyncComponent(() =>
+  import("@/components/navigation.vue")
+);
+const mobile = ref(null);
+
+
+const checkScreen = ()=>{
+  const windowWidth = window.innerWidth;
+  if (window.innerWidth <= 750) {
+    mobile.value = true
+  }else{
+    mobile.value = false
+  }
+}
+ window.addEventListener("resize",checkScreen)
+
+
+
+
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-      </nav>
+  <div v-if="!mobile" class="app flex flex-column" >
+    <Navigation />
+    <div class="app-content flex flex-column">
+      <RouterView />
     </div>
-  </header>
-
-  <RouterView />
+  </div>
+  <div v-else class="mobile-message flex flex-column">
+      <h2>Sorry, this app is not supported on mobile devices </h2>
+      <p>to use this app, please use computer or tablet</p>
+  </div>
 </template>
 
 <style lang="scss">
@@ -21,7 +43,28 @@ import { RouterLink, RouterView } from "vue-router";
   padding: 0;
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
+  // background-color: #141625;
+}
+.app {
   background-color: #141625;
+  min-height: 100vh;
+  @media (min-width:900px){
+    flex-direction: row !important;
+  }
+
+  .app-content{
+    padding: 0 20px;
+    flex: 1;
+    position: relative;
+  }
+}
+.mobile-message{
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #141625;
+  color: #fff;
 }
 button,
 .button {
